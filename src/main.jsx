@@ -21,8 +21,7 @@ const observationRounds = ["Round 1", "Round 2", "Round 3"];
 const initialObservationDetails = {
   teacherName: "",
   school: "",
-  grade: "",
-  subject: "",
+  gradeSubject: "",
   observerName: "",
   observationDate: "",
 };
@@ -30,10 +29,9 @@ const initialObservationDetails = {
 const detailFields = [
   { id: "teacherName", label: "Teacher Name", autoComplete: "name" },
   { id: "school", label: "School" },
-  { id: "grade", label: "Grade" },
-  { id: "subject", label: "Subject" },
+  { id: "gradeSubject", label: "Grade/Subject", optional: true },
   { id: "observerName", label: "Observer Name", autoComplete: "name" },
-  { id: "observationDate", label: "Observation Date", type: "date" },
+  { id: "observationDate", label: "Observation Date", type: "date", optional: true },
 ];
 
 const acceptedTypes = [
@@ -202,7 +200,7 @@ function UploadCard() {
     }
 
     const missingDetail = detailFields.find(
-      (field) => !observationDetails[field.id].trim()
+      (field) => !field.optional && !observationDetails[field.id].trim()
     );
 
     if (missingDetail) {
@@ -239,8 +237,7 @@ function UploadCard() {
       formData.append("file", selectedFile);
       formData.append("teacherName", observationDetails.teacherName.trim());
       formData.append("school", observationDetails.school.trim());
-      formData.append("grade", observationDetails.grade.trim());
-      formData.append("subject", observationDetails.subject.trim());
+      formData.append("gradeSubject", observationDetails.gradeSubject.trim());
       formData.append("observationType", observationType);
       formData.append("observationRound", observationRound);
       formData.append("observerName", observationDetails.observerName.trim());
@@ -340,6 +337,7 @@ function UploadCard() {
             label={field.label}
             type={field.type || "text"}
             autoComplete={field.autoComplete}
+            optional={field.optional}
             value={observationDetails[field.id]}
             onChange={(value) => updateObservationDetail(field.id, value)}
           />
@@ -440,18 +438,22 @@ function ResultLink({ label, file }) {
   );
 }
 
-function TextField({ id, label, type, autoComplete, value, onChange }) {
+function TextField({ id, label, type, autoComplete, value, onChange, optional }) {
   return (
     <label className="field" htmlFor={id}>
       <span>
-        {label} <strong aria-hidden="true">*</strong>
+        {label}{" "}
+        {optional
+          ? <em aria-label="optional" style={{ fontStyle: "normal", fontWeight: "normal", opacity: 0.6 }}>(optional)</em>
+          : <strong aria-hidden="true">*</strong>
+        }
       </span>
       <input
         id={id}
         type={type}
         value={value}
         autoComplete={autoComplete}
-        required
+        required={!optional}
         onChange={(event) => onChange(event.target.value)}
       />
     </label>

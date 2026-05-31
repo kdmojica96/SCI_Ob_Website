@@ -17,8 +17,9 @@ const requiredFields = [
   "observationType",
   "observationRound",
   "observerName",
-  "observationDate",
 ];
+
+const optionalFields = ["gradeSubject", "observationDate"];
 
 function slugify(value) {
   return String(value)
@@ -107,7 +108,7 @@ function buildMarkdown(details, originalFileName, originalUrl, extractedText) {
 - Observation Type: ${details.observationType}
 - Observation Round: ${details.observationRound}
 - Observer Name: ${details.observerName}
-- Observation Date: ${details.observationDate}
+- Observation Date: ${details.observationDate || "N/A"}
 - Original File: ${originalFileName}
 - Original Cloudinary URL: ${originalUrl}
 
@@ -183,9 +184,10 @@ export const handler = async (event) => {
       return { statusCode: 400, headers: corsHeaders, body: JSON.stringify({ error: "Only PDF and DOCX files are supported." }) };
     }
 
-    const details = Object.fromEntries(
-      requiredFields.map((f) => [f, cleanMetadataValue(fields[f])])
-    );
+    const details = {
+      ...Object.fromEntries(requiredFields.map((f) => [f, cleanMetadataValue(fields[f])])),
+      ...Object.fromEntries(optionalFields.map((f) => [f, cleanMetadataValue(fields[f] || "")])),
+    };
 
     const missingField = requiredFields.find((f) => !details[f]);
     if (missingField) {

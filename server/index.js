@@ -20,13 +20,12 @@ const projectRoot = path.resolve(__dirname, "..");
 const requiredFields = [
   "teacherName",
   "school",
-  "grade",
-  "subject",
   "observationType",
   "observationRound",
   "observerName",
-  "observationDate",
 ];
+
+const optionalFields = ["gradeSubject", "observationDate"];
 
 const app = express();
 const upload = multer({
@@ -63,8 +62,7 @@ function buildContext(details) {
   return [
     `teacher_name=${cleanMetadataValue(details.teacherName)}`,
     `school=${cleanMetadataValue(details.school)}`,
-    `grade=${cleanMetadataValue(details.grade)}`,
-    `subject=${cleanMetadataValue(details.subject)}`,
+    `grade_subject=${cleanMetadataValue(details.gradeSubject)}`,
     `observation_type=${cleanMetadataValue(details.observationType)}`,
     `observation_round=${cleanMetadataValue(details.observationRound)}`,
     `observer_name=${cleanMetadataValue(details.observerName)}`,
@@ -139,12 +137,11 @@ function buildMarkdown(details, originalFileName, originalUpload, extractedText)
 
 - Teacher Name: ${details.teacherName}
 - School: ${details.school}
-- Grade: ${details.grade}
-- Subject: ${details.subject}
+- Grade/Subject: ${details.gradeSubject || "N/A"}
 - Observation Type: ${details.observationType}
 - Observation Round: ${details.observationRound}
 - Observer Name: ${details.observerName}
-- Observation Date: ${details.observationDate}
+- Observation Date: ${details.observationDate || "N/A"}
 - Original File: ${originalFileName}
 - Original Cloudinary URL: ${originalUpload.secure_url}
 
@@ -169,9 +166,14 @@ app.post("/api/observations", upload.single("file"), async (request, response) =
       return response.status(400).json({ error: "Only PDF, DOC, and DOCX files are supported." });
     }
 
-    const details = Object.fromEntries(
-      requiredFields.map((field) => [field, cleanMetadataValue(request.body[field])])
-    );
+    const details = {
+      ...Object.fromEntries(
+        requiredFields.map((field) => [field, cleanMetadataValue(request.body[field])])
+      ),
+      ...Object.fromEntries(
+        optionalFields.map((field) => [field, cleanMetadataValue(request.body[field] || "")])
+      ),
+    };
 
     const missingField = requiredFields.find((field) => !details[field]);
 
@@ -191,7 +193,7 @@ app.post("/api/observations", upload.single("file"), async (request, response) =
       slugify(details.observationType),
       slugify(details.observationRound),
       slugify(details.school),
-      slugify(details.subject),
+      slugify(details.gradeSubject),
       "original",
     ].filter(Boolean);
 
