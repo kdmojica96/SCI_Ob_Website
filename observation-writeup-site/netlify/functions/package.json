@@ -1,0 +1,8 @@
+{
+  "name": "observation-writeup-functions",
+  "version": "1.0.0",
+  "description": "Netlify serverless functions for the Peekskill observation write-up workflow",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0"
+  }
+}

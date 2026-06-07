@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Peekskill CSD — Teacher Observation Submission</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      max-width: 560px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .header {
+      background: #1F4E79;
+      padding: 28px 32px 22px;
+      color: #fff;
+    }
+
+    .header .district {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #90b8d8;
+      margin-bottom: 6px;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 1.3;
+    }
+
+    .header p {
+      font-size: 13px;
+      color: #b8d4ec;
+      margin-top: 6px;
+    }
+
+    form {
+      padding: 28px 32px 32px;
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      color: #1F4E79;
+      margin-bottom: 6px;
+    }
+
+    label .required {
+      color: #c00;
+      margin-left: 2px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #d0dce8;
+      border-radius: 7px;
+      font-size: 14px;
+      color: #222;
+      background: #fafcff;
+      transition: border-color 0.2s;
+      appearance: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    select:focus {
+      outline: none;
+      border-color: #2E75B6;
+      background: #fff;
+    }
+
+    .select-wrap {
+      position: relative;
+    }
+
+    .select-wrap::after {
+      content: "▾";
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #2E75B6;
+      pointer-events: none;
+      font-size: 14px;
+    }
+
+    .file-area {
+      border: 2px dashed #b0c8e0;
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+      background: #f5f9fd;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .file-area:hover, .file-area.dragover {
+      border-color: #2E75B6;
+      background: #eaf2fb;
+    }
+
+    .file-area .icon { font-size: 28px; margin-bottom: 8px; }
+    .file-area .prompt { font-size: 13px; color: #444; }
+    .file-area .types { font-size: 11px; color: #888; margin-top: 4px; }
+    .file-area input[type="file"] { display: none; }
+
+    .file-name {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #1F4E79;
+      font-weight: bold;
+      display: none;
+    }
+
+    .row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .row .field { flex: 1; }
+
+    .hint {
+      font-size: 11px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #e8eef4;
+      margin: 8px 0 22px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #2E75B6;
+      margin-bottom: 16px;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 14px;
+      background: #1F4E79;
+      color: #fff;
+      font-size: 15px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+
+    button[type="submit"]:hover { background: #2E75B6; }
+    button[type="submit"]:disabled { background: #9ab6cf; cursor: not-allowed; }
+
+    .success-msg {
+      display: none;
+      background: #e6f4ea;
+      border: 1.5px solid #81c784;
+      border-radius: 8px;
+      padding: 18px 20px;
+      color: #2e7d32;
+      font-size: 14px;
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+
+    .error-msg {
+      display: none;
+      background: #fdecea;
+      border: 1.5px solid #e57373;
+      border-radius: 8px;
+      padding: 14px 18px;
+      color: #c62828;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    .footer-note {
+      padding: 16px 32px;
+      background: #f5f9fd;
+      border-top: 1px solid #e8eef4;
+      font-size: 11px;
+      color: #888;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <div class="district">Peekskill City School District</div>
+    <h1>Teacher Observation Write-Up</h1>
+    <p>Submit your raw observation notes and receive a completed Danielson APPR write-up by email.</p>
+  </div>
+
+  <form id="obs-form" netlify netlify-honeypot="bot-field" name="observation-submission" enctype="multipart/form-data">
+    <input type="hidden" name="form-name" value="observation-submission" />
+    <p style="display:none"><input name="bot-field" /></p>
+
+    <div class="section-label">Teacher Information</div>
+
+    <div class="row">
+      <div class="field">
+        <label for="teacher-name">Teacher Name <span class="required">*</span></label>
+        <input type="text" id="teacher-name" name="teacher_name" placeholder="First Last" required />
+      </div>
+      <div class="field">
+        <label for="building">Building <span class="required">*</span></label>
+        <div class="select-wrap">
+          <select id="building" name="building" required>
+            <option value="" disabled selected>Select</option>
+            <option value="PKMS">PKMS</option>
+            <option value="PHS">PHS</option>
+            <option value="EBA">EBA</option>
+            <option value="Hillcrest">Hillcrest</option>
+            <option value="Uriah Hill">Uriah Hill</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="subject">Subject <span class="required">*</span></label>
+        <input type="text" id="subject" name="subject" placeholder="e.g. Computer Science" required />
+      </div>
+      <div class="field">
+        <label for="grade">Grade Level <span class="required">*</span></label>
+        <input type="text" id="grade" name="grade" placeholder="e.g. 6th" required />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="round">Observation Round <span class="required">*</span></label>
+        <div class="select-wrap">
+          <select id="round" name="round" required>
+            <option value="" disabled selected>Select</option>
+            <option value="1">Round 1 — Announced</option>
+            <option value="2">Round 2 — Unannounced</option>
+            <option value="3">Round 3 — Announced</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="obs-date">Observation Date <span class="required">*</span></label>
+        <input type="text" id="obs-date" name="obs_date" placeholder="MM/DD/YYYY" required />
+      </div>
+    </div>
+
+    <hr class="divider" />
+    <div class="section-label">Observation Notes File</div>
+
+    <div class="field">
+      <label>Upload File <span class="required">*</span></label>
+      <div class="file-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
+        <div class="icon">📄</div>
+        <div class="prompt">Click to browse or drag and drop your file here</div>
+        <div class="types">PDF, Word (.docx), or Google Doc link below</div>
+        <input type="file" id="file-input" name="observation_file" accept=".pdf,.doc,.docx" />
+      </div>
+      <div class="file-name" id="file-name-display"></div>
+    </div>
+
+    <div class="field">
+      <label for="gdoc-link">Google Doc Link <span style="font-weight:normal;color:#888">(optional — use instead of file upload)</span></label>
+      <input type="text" id="gdoc-link" name="gdoc_link" placeholder="https://docs.google.com/document/d/..." />
+      <div class="hint">Paste the shareable link. Make sure sharing is set to "Anyone with the link."</div>
+    </div>
+
+    <hr class="divider" />
+    <div class="section-label">Delivery</div>
+
+    <div class="field">
+      <label for="recipient-email">Your Email — where we'll send the completed write-up <span class="required">*</span></label>
+      <input type="email" id="recipient-email" name="recipient_email" placeholder="yourname@peekskillcsd.org" required />
+    </div>
+
+    <button type="submit" id="submit-btn">Submit Observation Notes</button>
+
+    <div class="success-msg" id="success-msg">
+      ✅ <strong>Submitted!</strong> Your observation notes are being processed. You'll receive the completed Danielson write-up at the email you provided within a few minutes.
+    </div>
+    <div class="error-msg" id="error-msg">
+      Something went wrong. Please try again or contact your administrator.
+    </div>
+  </form>
+
+  <div class="footer-note">
+    Completed write-ups are sent from summitcurriculumlinstruction@gmail.com &nbsp;·&nbsp; Peekskill CSD APPR System
+  </div>
+</div>
+
+<script>
+  // Drag-and-drop
+  const dropZone = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input');
+  const fileNameDisplay = document.getElementById('file-name-display');
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length > 0) {
+      fileNameDisplay.textContent = '📎 ' + fileInput.files[0].name;
+      fileNameDisplay.style.display = 'block';
+    }
+  });
+
+  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      fileInput.files = files;
+      fileNameDisplay.textContent = '📎 ' + files[0].name;
+      fileNameDisplay.style.display = 'block';
+    }
+  });
+
+  // Form submission
+  const form = document.getElementById('obs-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const successMsg = document.getElementById('success-msg');
+  const errorMsg = document.getElementById('error-msg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+    errorMsg.style.display = 'none';
+
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('/.netlify/functions/submit-observation', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        form.style.display = 'none';
+        successMsg.style.display = 'block';
+      } else {
+        throw new Error('Server error');
+      }
+    } catch (err) {
+      errorMsg.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Observation Notes';
+    }
+  });
+</script>
+</body>
+</html>
