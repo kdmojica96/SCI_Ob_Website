@@ -10,10 +10,10 @@ const FOLDER_NAME = "Summit-Curriculum-Instruction";
 const MAX_UPLOAD_SIZE = 25 * 1024 * 1024;
 
 const requiredFields = [
+  "recipientEmail",
   "teacherName",
   "school",
-  "grade",
-  "subject",
+  "gradeSubject",
   "observationType",
   "observationRound",
   "observerName",
@@ -34,10 +34,10 @@ function cleanMetadataValue(value) {
 
 function buildContext(details) {
   return [
+    `recipient_email=${cleanMetadataValue(details.recipientEmail)}`,
     `teacher_name=${cleanMetadataValue(details.teacherName)}`,
     `school=${cleanMetadataValue(details.school)}`,
-    `grade=${cleanMetadataValue(details.grade)}`,
-    `subject=${cleanMetadataValue(details.subject)}`,
+    `grade_subject=${cleanMetadataValue(details.gradeSubject)}`,
     `observation_type=${cleanMetadataValue(details.observationType)}`,
     `observation_round=${cleanMetadataValue(details.observationRound)}`,
     `observer_name=${cleanMetadataValue(details.observerName)}`,
@@ -100,10 +100,10 @@ function buildMarkdown(details, originalFileName, originalUrl, extractedText) {
 
 ## Data Collection
 
+- Recipient Email: ${details.recipientEmail}
 - Teacher Name: ${details.teacherName}
 - School: ${details.school}
-- Grade: ${details.grade}
-- Subject: ${details.subject}
+- Grade/Subject: ${details.gradeSubject}
 - Observation Type: ${details.observationType}
 - Observation Round: ${details.observationRound}
 - Observer Name: ${details.observerName}
@@ -203,7 +203,7 @@ export const handler = async (event) => {
       slugify(details.observationType),
       slugify(details.observationRound),
       slugify(details.school),
-      slugify(details.subject),
+      slugify(details.gradeSubject),
       "original",
     ].filter(Boolean);
 

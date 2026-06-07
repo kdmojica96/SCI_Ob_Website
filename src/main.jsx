@@ -23,21 +23,21 @@ const observationTypes = ["Announced", "Unannounced"];
 const observationRounds = ["Round 1", "Round 2", "Round 3"];
 
 const initialObservationDetails = {
+  recipientEmail: "",
   teacherName: "",
   school: "",
-  grade: "",
-  subject: "",
   observerName: "",
   observationDate: "",
+  gradeSubject: "",
 };
 
 const detailFields = [
+  { id: "recipientEmail", label: "Recipient Email", type: "email", autoComplete: "email", placeholder: "Email address for the completed write-up" },
   { id: "teacherName", label: "Teacher Name", autoComplete: "name" },
   { id: "school", label: "School" },
-  { id: "grade", label: "Grade" },
-  { id: "subject", label: "Subject" },
   { id: "observerName", label: "Observer Name", autoComplete: "name" },
   { id: "observationDate", label: "Observation Date", type: "date" },
+  { id: "gradeSubject", label: "Grade/Subject", placeholder: "e.g., 5th Grade / Math" },
 ];
 
 const acceptedTypes = [
@@ -97,7 +97,7 @@ function WorkflowDocs() {
             <span>1</span>
             <div>
               <strong>Input</strong>
-              <p>User submits a Google Doc link, uploaded PDF, or Word doc with raw observation notes.</p>
+              <p>User provides the recipient email address and uploads a PDF or Word doc with raw observation notes. The email is used to send the completed write-up.</p>
             </div>
           </div>
           <div className="workflow-step">
@@ -313,14 +313,14 @@ function UploadCard() {
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);
+      formData.append("recipientEmail", observationDetails.recipientEmail.trim());
       formData.append("teacherName", observationDetails.teacherName.trim());
       formData.append("school", observationDetails.school.trim());
-      formData.append("grade", observationDetails.grade.trim());
-      formData.append("subject", observationDetails.subject.trim());
-      formData.append("observationType", observationType);
-      formData.append("observationRound", observationRound);
       formData.append("observerName", observationDetails.observerName.trim());
       formData.append("observationDate", observationDetails.observationDate);
+      formData.append("gradeSubject", observationDetails.gradeSubject.trim());
+      formData.append("observationType", observationType);
+      formData.append("observationRound", observationRound);
 
       setProgress(45);
       const response = await fetch(API_URL, { method: "POST", body: formData });
@@ -461,11 +461,11 @@ function ResultLink({ label, file }) {
   );
 }
 
-function TextField({ id, label, type, autoComplete, value, onChange }) {
+function TextField({ id, label, type, autoComplete, placeholder, value, onChange }) {
   return (
     <label className="field" htmlFor={id}>
       <span>{label} <strong aria-hidden="true">*</strong></span>
-      <input id={id} type={type} value={value} autoComplete={autoComplete} required onChange={(event) => onChange(event.target.value)} />
+      <input id={id} type={type} value={value} autoComplete={autoComplete} placeholder={placeholder} required onChange={(event) => onChange(event.target.value)} />
     </label>
   );
 }
